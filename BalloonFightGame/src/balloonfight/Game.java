@@ -16,6 +16,7 @@ import balloonfight.entities.movingentities.EnemyEntity;
 import balloonfight.entities.movingentities.Player1Entity;
 import balloonfight.entities.movingentities.PlayerEntity;
 import balloonfight.utilities.BoundingBox;
+
 /**
  * Builds the game and sets it into the frame to play.
  * 
@@ -224,8 +225,7 @@ public class Game extends JPanel{
 	 * 
 	 * @param i enemy entity to move.
 	 */
-	public void randomMovement(Entity i)
-	{
+	public void randomMovement(Entity i) {
 		Random rand = new Random();
 		EnemyEntity enemy = (EnemyEntity) i;
 		
@@ -296,17 +296,17 @@ public class Game extends JPanel{
 			}*/
 		}
 	}
-/**
-* If all of the enemies have been killed then it moves to the next level with more enemies.
-*/
-private void nextLevel(){
-for(Entity i:ents){
-	if(i instanceof EnemyEntity)
-		return;
-}
-player.setPosition(32, 64);
-level++;
-MapLayout.spawnEnts(this, level);
-}
+	/**
+	* If all of the enemies have been killed then it moves to the next level with more enemies.
+	*/
+	private void nextLevel(){
+		for(Entity i:ents){
+			if(i instanceof EnemyEntity)
+				return;
+		}
+		player.setPosition(32, 64);
+		level++;
+		MapLayout.spawnEnts(this, level);
+	}
 
 }
