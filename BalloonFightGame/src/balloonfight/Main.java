@@ -5,13 +5,23 @@ import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
-
+/**
+ * Main class that builds the frame for the game panel.
+ * 
+ * @author Patrick Emery, Greyson Hill
+ *
+ */
 public class Main {
 public static JFrame frame;
 public static Game panel;
 public static boolean jumpDown;
 public static boolean leftDown;
 public static boolean rightDown;
+/**
+ * Method that builds the frame for the game panel. Adds key listeners for user controls.
+ * 
+ * @param args Ignored.
+ */
 public static void main(String[] args){
 	frame = new JFrame();
 	frame.setSize(640,480);
@@ -54,6 +64,9 @@ public static void main(String[] args){
         }
     });
 }
+/**
+ * When the game is over and the user decides to play again, it refreshes to the first level.
+ */
 public static void restart(){
 	panel = new Game();
 	MapLayout.initialize((Game) panel);

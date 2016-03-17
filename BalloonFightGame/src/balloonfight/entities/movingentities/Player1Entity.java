@@ -2,13 +2,21 @@ package balloonfight.entities.movingentities;
 
 import java.awt.Point;
 
-import javax.swing.JPanel;
-
 import balloonfight.Game;
 import balloonfight.Main;
 
-
+/**
+ * Class that builds the player entity.
+ * 
+ * @author Patrick Emery, Greyson Hill, Torrance Yang
+ *
+ */
 public class Player1Entity extends PlayerEntity{
+	/**
+	 * Rendering.
+	 * 
+	 * @author Patrick Emery
+	 */
 	public enum EnumPlayerState {
 		Idle1, Idle2, Idle3, IdleOne1, IdleOne2, IdleOne3,
 		RunOne1, RunOne2, RunOne3, Run1, Run2, Run3,
@@ -17,6 +25,9 @@ public class Player1Entity extends PlayerEntity{
 	private static final long serialVersionUID = 1L;
 	public int lives;
 	EnumPlayerState animState;
+	/**
+	 * Constructor for the player entity.
+	 */
 	public Player1Entity(){
 		super(32,64);
 		onGround = false;
@@ -24,6 +35,9 @@ public class Player1Entity extends PlayerEntity{
 		lives = 3;
 		balloons = 2;
 	}
+	/**
+	 * Position of all the possible states of the player in the source image.
+	 */
 	@Override      
 	public Point tilePosition() {
 		switch(animState){
@@ -69,6 +83,9 @@ public class Player1Entity extends PlayerEntity{
 			return new Point(1,1);
 		}
 	}
+	/**
+	 * Animation for idling whether the player has one or two balloons.
+	 */
 	public void setIdle(){
 		if(balloons==2)
 		switch(animState){
@@ -89,6 +106,9 @@ public class Player1Entity extends PlayerEntity{
 			animState = EnumPlayerState.IdleOne1;
 		}
 	}
+	/**
+	 * Animation for if the player is on a platform running.
+	 */
 	public void setRun(){
 		if(balloons==2)
 		switch(animState){
@@ -109,6 +129,9 @@ public class Player1Entity extends PlayerEntity{
 			animState = EnumPlayerState.RunOne1;
 		}
 	}
+	/**
+	 * Animation for if the player is jumping and flying.
+	 */
 	public void setFlap(){
 		if(balloons==0){
 			animState = EnumPlayerState.Fall;
@@ -131,6 +154,9 @@ public class Player1Entity extends PlayerEntity{
 			animState = EnumPlayerState.FlapOne1;
 		}
 	}
+	/**
+	 * Size of each render state in the source image.
+	 */
 	@Override
 	public Point tileSize() {
 		if(animState==EnumPlayerState.Flap1|animState==EnumPlayerState.Flap2|animState==EnumPlayerState.Flap3|animState==EnumPlayerState.Idle1|animState==EnumPlayerState.Idle2|animState==EnumPlayerState.Idle3|animState==EnumPlayerState.Run1|animState==EnumPlayerState.Run2|animState==EnumPlayerState.Run3)
@@ -142,6 +168,11 @@ public class Player1Entity extends PlayerEntity{
 		else
 		return new Point(13,27);
 	}
+	/**
+	 * Determines the lives of the player and how many balloons remain.
+	 * 
+	 * @param game the current game panel.
+	 */
 	public void kill(Game game){
 		lives--;
 		X = 32;

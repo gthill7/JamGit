@@ -16,18 +16,41 @@ import balloonfight.entities.movingentities.EnemyEntity;
 import balloonfight.entities.movingentities.Player1Entity;
 import balloonfight.entities.movingentities.PlayerEntity;
 import balloonfight.utilities.BoundingBox;
-
+/**
+ * Builds the game and sets it into the frame to play.
+ * 
+ * @author Patrick Emery, Greyson Hill
+ *
+ */
 public class Game extends JPanel{
+	// Obligatory Serial Number
 	private static final long serialVersionUID = 1L;
+	
+	// Array of all entity objects within the class. For ease of management.
 	public ArrayList<Entity> ents;
+	
+	// Player x and y
 	int pX;
-	public boolean gameOver;
-	public int points;
 	int pY;
+	
+	// Some Tokens to determine if this should still exist, and if it should, what to do.
+	public boolean gameOver;
+	boolean nullSession;
+	
+	// Points and levels
+	public int points;
 	int level;
+	
+	// Token to prevent spawn overlap or redundancy
 	public boolean initialized;
+	
+	// Useful instance variables
 	Game currentGame;
 	Player1Entity player;
+	/**
+	 * Constructor for the game class. Initializes instance variables and
+	 * listeners.
+	 */
 	public Game(){
 		this.removeAll();
 		gameOver = false;
@@ -35,6 +58,10 @@ public class Game extends JPanel{
 		level = 1;
 		currentGame = this;
 		ActionListener jump = new ActionListener(){
+			/**
+			 * Handles jumping detection.
+			 * @param e The Action Event
+			 */
 			public void actionPerformed(ActionEvent e){
 				if(gameOver)return;
 				for(Entity i:ents){
@@ -50,11 +77,18 @@ public class Game extends JPanel{
 			}
 		};
 		ActionListener move = new ActionListener(){
+			/**
+			 * The movement events and collision detection
+			 * @param e The Action Event
+			 */
 			public void actionPerformed(ActionEvent e){
+				if(nullSession)return;
 				if(gameOver){
 					if(Main.jumpDown){
+						currentGame.removeAll();
 						Main.restart();
 						gameOver = false;
+						nullSession = true;
 					}
 					return;
 				}
@@ -132,108 +166,11 @@ public class Game extends JPanel{
 		setVisible(true);
 		setLayout(null);
 	}
-	public void reInit(){
-		this.removeAll();
-		gameOver = false;
-		initialized = false;
-		level = 1;
-		currentGame = this;
-		ActionListener jump = new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-				if(gameOver)return;
-				for(Entity i:ents){
-					if(i instanceof Player1Entity){
-						pY = i.getY();
-						pX = i.getX();
-						if(Main.jumpDown){((Player1Entity) i).jump();System.out.println("Jumping...");((Player1Entity) i).setFlap();}
-					}else if(i instanceof EnemyEntity)
-					{
-						// Random Movement
-					}
-				}
-			}
-		};
-		ActionListener move = new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-				if(gameOver){
-					if(Main.jumpDown){
-					}
-					return;
-				}
-				boolean enemies = false;
-				try{
-				for(Entity i:ents){
-					for(Entity j:ents){
-						if(j==i)break;
-						BoundingBox jb = j.getBoundingBox();
-						BoundingBox ib = i.getBoundingBox();
-						int Ax1 = jb.minX + j.getX();
-						int Ax2 = jb.maxX += j.getX();
-						int Ay1 = jb.minY += j.getY();
-						int Ay2 = jb.maxY += j.getY();
-						int Bx1 = ib.minX += i.getX();
-						int Bx2 = ib.maxX += i.getX();
-						int By1 = ib.minY += i.getY();
-						int By2 = ib.maxY += i.getY();
-						if(Ax1<Bx2&Ax2>Bx1&Ay1<By2&Ay2>By1){
-							i.onCollision(j);
-							j.onCollision(i);
-						}
-					}
-					i.updatePosition();
-					currentGame.repaint();
-					if(i instanceof PlayerEntity){
-						if(((PlayerEntity) i).isDead()){
-							if(i instanceof EnemyEntity){
-							points+=i.points;
-							currentGame.remove(i);
-							currentGame.ents.remove(i);
-							} else {
-								((Player1Entity)i).kill(currentGame);
-							}
-						}else if(i instanceof Player1Entity){
-						pX = i.getX();
-						pY = i.getY();
-						if(Main.leftDown){
-							((Player1Entity) i).moveLeft();
-							i.setFacingRight(false);
-							if(((Player1Entity) i).onGround()){
-								((Player1Entity) i).setRun();
-							}
-							}
-						else if(Main.rightDown){
-							((Player1Entity) i).moveRight();
-							i.setFacingRight(true);
-							if(((Player1Entity) i).onGround()) {
-								((Player1Entity) i).setRun();
-								}
-							}
-						else{
-							if(((Player1Entity) i).onGround()){
-								((Player1Entity) i).setIdle();
-							}
-						}
-					}else if(i instanceof EnemyEntity)
-					{
-						enemies=true;
-						randomMovement(i);
-					}}
-				}
-				if(!enemies&initialized){
-					nextLevel();
-				}
-				} catch(Exception error)
-				{
-					
-				}
-			}
-		};
-		new Timer(125, jump).start();
-		new Timer(50, move).start();
-		ents = new ArrayList<Entity>();
-		setVisible(true);
-		setLayout(null);
-	}
+	/**
+	 * Adds any instances of the Entities to an array list, and to the list of displayed objects.
+	 * 
+	 * @param j component entity to add.
+	 */
 	public Component add(Component j){
 		if(j instanceof Entity)ents.add((Entity)j);
 		j.setVisible(true);
@@ -242,7 +179,13 @@ public class Game extends JPanel{
 		}
 		return super.add(j);
 	}
+	/**
+	 * Draws all of the entities on the game panel.
+	 * 
+	 * @param g source of graphics.
+	 */
 	public void paintComponent(Graphics g){
+		if(nullSession)return;
 		if(gameOver){
 			g.setColor(new Color(255,255,255));
 			g.drawString("Game Over", 300, 220);
@@ -267,9 +210,20 @@ public class Game extends JPanel{
 			i.paintComponent(g);
 		}
 	}
+	/**
+	 * Updates and essentially repaints the game panel.
+	 * 
+	 * @param g source of graphics.
+	 */
 	public void update(Graphics g){
 		paintComponent(g);
 	}
+	/**
+	 * AI for the enemies to move. Will follow the player if within a certain
+	 * radius occasionally. Made by Torrance and Greyson.
+	 * 
+	 * @param i enemy entity to move.
+	 */
 	public void randomMovement(Entity i)
 	{
 		Random rand = new Random();
@@ -342,6 +296,9 @@ public class Game extends JPanel{
 			}*/
 		}
 	}
+/**
+* If all of the enemies have been killed then it moves to the next level with more enemies.
+*/
 private void nextLevel(){
 for(Entity i:ents){
 	if(i instanceof EnemyEntity)

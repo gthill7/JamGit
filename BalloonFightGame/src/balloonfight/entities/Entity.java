@@ -19,7 +19,15 @@ protected int X;
 public int points;
 protected int Y;
 protected boolean facingRight;
-
+/**
+ * The parent class for all entities.
+ * 
+ * @author Greyson Hill, Torrance Yang
+ *
+ */
+/**
+ * Constructor for the entities.
+ */
 public Entity(){
 facingRight = true;
 points = 0;
@@ -30,9 +38,19 @@ try {
 }}
 public abstract Point tilePosition();
 public abstract Point tileSize();
+/**
+ * Changes the orientation of the entity based on their direction.
+ * 
+ * @param b boolean for the direction of entity.
+ */
 public void setFacingRight(boolean b){
 	facingRight = b;
 }
+/**
+ * Draws the entities based on their direction.
+ * 
+ * @param g2 source of the graphics.
+ */
 public void paintComponent(Graphics g2){
 	Graphics2D g = (Graphics2D) g2;
 	if(!facingRight)
@@ -42,10 +60,15 @@ public void paintComponent(Graphics g2){
 
 }
 public abstract void updatePosition();
-
+/**
+ * Getter for the x coordinate of entity.
+ */
 public int getX(){
 	return X;
 }
+/**
+ * Getter for the y coordinate of entity.
+ */
 public int getY(){
 	return Y;
 }
